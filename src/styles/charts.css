@@ -1,0 +1,16 @@
+/* Contenedor de gráficos */
+.chart-container {
+    background-color: #ffffff; /* Fondo blanco */
+    padding: 1.5rem;
+    border-radius: 0.5rem; /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    margin-bottom: 2rem; /* Espaciado inferior */
+  }
+  
+  .chart-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #343a40; /* Gris oscuro */
+    margin-bottom: 1rem;
+    text-align: center;
+  }

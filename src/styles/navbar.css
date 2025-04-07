@@ -1,0 +1,25 @@
+/* Estilo del navbar */
+.navbar {
+    background-color: #ffffff; /* Fondo blanco */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    padding: 1rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff; /* Azul Bootstrap */
+  }
+  
+  .navbar-brand:hover {
+    color: #0056b3; /* Azul más oscuro */
+  }
+  
+  .nav-link {
+    color: #495057; /* Gris intermedio */
+    font-weight: 500;
+  }
+  
+  .nav-link:hover {
+    color: #007bff; /* Azul Bootstrap */
+  }

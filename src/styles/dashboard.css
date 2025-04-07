@@ -1,0 +1,87 @@
+/* Contenedor principal del dashboard */
+.dashboard-container {
+  background-color: #f8f9fa; /* Fondo gris claro */
+  min-height: 100vh; /* Altura mínima de la pantalla */
+  padding: 2rem; /* Espaciado interno */
+}
+
+/* Título principal del dashboard */
+.dashboard-title {
+  font-size: 2.5rem; /* Tamaño de fuente grande */
+  font-weight: bold; /* Texto en negrita */
+  text-align: center; /* Centrar texto */
+  color: #343a40; /* Gris oscuro */
+  margin-bottom: 2rem; /* Espaciado inferior */
+}
+
+/* Títulos de las secciones */
+.section-title {
+  font-size: 1.5rem; /* Tamaño de fuente mediano */
+  font-weight: 600; /* Seminegrita */
+  color: #495057; /* Gris intermedio */
+  margin-bottom: 1rem; /* Espaciado inferior */
+}
+
+/* Texto de carga */
+.loading-text {
+  font-size: 1rem;
+  color: #6c757d; /* Gris Bootstrap */
+}
+
+/* Texto cuando no hay datos */
+.no-data-text {
+  font-size: 1rem;
+  color: #6c757d; /* Gris Bootstrap */
+  font-style: italic;
+}
+
+/* Lista de preferencias */
+.preferences-list {
+  list-style: none; /* Sin viñetas */
+  padding: 0;
+  margin: 0;
+}
+
+.preferences-item {
+  background-color: #ffffff; /* Fondo blanco */
+  padding: 1rem; /* Espaciado interno */
+  border: 1px solid #dee2e6; /* Borde gris claro */
+  border-radius: 0.25rem; /* Bordes redondeados */
+  margin-bottom: 0.5rem; /* Espaciado inferior */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+/* Lista de tasas */
+.rates-list {
+  list-style: none; /* Sin viñetas */
+  padding: 0;
+  margin: 0;
+}
+
+.rates-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff; /* Fondo blanco */
+  padding: 1rem; /* Espaciado interno */
+  border: 1px solid #dee2e6; /* Borde gris claro */
+  border-radius: 0.25rem; /* Bordes redondeados */
+  margin-bottom: 0.5rem; /* Espaciado inferior */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.rate-value {
+  font-size: 1.25rem; /* Tamaño de fuente */
+  font-weight: bold; /* Texto en negrita */
+  color: #007bff; /* Azul Bootstrap */
+}
+
+/* Alertas del dashboard */
+.dashboard-alert {
+  background-color: #f8d7da; /* Rojo claro */
+  color: #721c24; /* Rojo oscuro */
+  padding: 1rem; /* Espaciado interno */
+  border: 1px solid #f5c6cb; /* Borde rojo claro */
+  border-radius: 0.5rem; /* Bordes redondeados */
+  margin-top: 1rem; /* Espaciado superior */
+}

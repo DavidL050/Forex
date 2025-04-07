@@ -1,0 +1,28 @@
+@import 'bootstrap/dist/css/bootstrap.min.css'; /* Bootstrap */
+@import './styles/dashboard.css'; /* Estilos del dashboard */
+@import './styles/navbar.css'; /* Estilos del navbar */
+@import './styles/login.css'; /* Estilos de la página de login */
+@import './styles/charts.css'; /* Estilos de los gráficos */
+@import './styles/alerts.css'; /* Estilos de las alertas */
+
+/* Estilos globales */
+body {
+  font-family: 'Arial', sans-serif; /* Fuente limpia y profesional */
+  background-color: #f8f9fa; /* Fondo gris claro */
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  color: #343a40; /* Gris oscuro */
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  text-decoration: underline;
+}
