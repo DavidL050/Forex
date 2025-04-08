@@ -1,8 +1,18 @@
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 
+// Obtener el token una vez
+const getToken = () => localStorage.getItem('token');
 
+// Función para manejar las respuestas de error
+const handleError = async (response) => {
+  const error = await response.json();
+  const errorMessage = error.message || 'Error en la solicitud';
+  throw new Error(errorMessage);
+};
+
+// Función para obtener preferencias
 export const getPreferences = async () => {
-  const token = localStorage.getItem('token');
+  const token = getToken();
   try {
     const response = await fetch(`${BACKEND_URL}/user/preferences`, {
       method: 'GET',
@@ -13,15 +23,16 @@ export const getPreferences = async () => {
     });
 
     if (!response.ok) {
-      throw new Error('Error fetching preferences');
+      await handleError(response);
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Fetch preferences error:', error);
+    console.error('Error al obtener preferencias:', error);
     throw error;
   }
 };
+
 // Función de login
 export const loginUser = async (username, password) => {
   try {
@@ -35,46 +46,43 @@ export const loginUser = async (username, password) => {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Error durante el login');
+      await handleError(response);
     }
 
-    const data = await response.json();
-    return data;
+    return await response.json(); // Retorna el token de respuesta
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Error en el login:', error);
     throw error;
   }
 };
 
 // Función para obtener tasas de cambio en tiempo real
 export const fetchRates = async (currencyPairs = []) => {
+  const token = getToken();
+  const query = currencyPairs.length ? `?pairs=${currencyPairs.join(',')}` : '';
   try {
-    const token = localStorage.getItem('token');
-    const query = currencyPairs.length ? `?pairs=${currencyPairs.join(',')}` : '';
-    
     const response = await fetch(`${BACKEND_URL}/api/rates${query}`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
 
     if (!response.ok) {
-      throw new Error('Error fetching rates');
+      await handleError(response);
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Fetch rates error:', error);
+    console.error('Error al obtener tasas de cambio:', error);
     throw error;
   }
 };
 
 // Función para obtener análisis técnico
 export const fetchTechnicalAnalysis = async (currencyPair, timeframe = '1d') => {
+  const token = getToken();
   try {
-    const token = localStorage.getItem('token');
     const response = await fetch(
       `${BACKEND_URL}/api/analysis/${currencyPair}?timeframe=${timeframe}`,
       {
@@ -86,20 +94,20 @@ export const fetchTechnicalAnalysis = async (currencyPair, timeframe = '1d') => 
     );
 
     if (!response.ok) {
-      throw new Error('Error fetching technical analysis');
+      await handleError(response);
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Technical analysis error:', error);
+    console.error('Error al obtener análisis técnico:', error);
     throw error;
   }
 };
 
 // Función para actualizar preferencias
 export const updatePreferences = async (preferences) => {
+  const token = getToken();
   try {
-    const token = localStorage.getItem('token');
     const response = await fetch(`${BACKEND_URL}/user/preferences`, {
       method: 'PUT',
       headers: {
@@ -110,21 +118,20 @@ export const updatePreferences = async (preferences) => {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Error al actualizar preferencias');
+      await handleError(response);
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Update preferences error:', error);
+    console.error('Error al actualizar preferencias:', error);
     throw error;
   }
 };
 
 // Función para obtener historial de precios
 export const fetchPriceHistory = async (currencyPair, from, to, interval = '1h') => {
+  const token = getToken();
   try {
-    const token = localStorage.getItem('token');
     const response = await fetch(
       `${BACKEND_URL}/api/history/${currencyPair}?from=${from}&to=${to}&interval=${interval}`,
       {
@@ -136,20 +143,20 @@ export const fetchPriceHistory = async (currencyPair, from, to, interval = '1h')
     );
 
     if (!response.ok) {
-      throw new Error('Error fetching price history');
+      await handleError(response);
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Price history error:', error);
+    console.error('Error al obtener historial de precios:', error);
     throw error;
   }
 };
 
 // Función para obtener predicciones
 export const fetchPredictions = async (currencyPair) => {
+  const token = getToken();
   try {
-    const token = localStorage.getItem('token');
     const response = await fetch(
       `${BACKEND_URL}/api/predictions/${currencyPair}`,
       {
@@ -161,12 +168,12 @@ export const fetchPredictions = async (currencyPair) => {
     );
 
     if (!response.ok) {
-      throw new Error('Error fetching predictions');
+      await handleError(response);
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Predictions error:', error);
+    console.error('Error al obtener predicciones:', error);
     throw error;
   }
 };

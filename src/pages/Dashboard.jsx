@@ -9,38 +9,26 @@ const Dashboard = () => {
   const [loadingPreferences, setLoadingPreferences] = useState(true);
   const [error, setError] = useState("");
 
-  // Obtener tasas de cambio al cargar el componente
+  // Obtener tasas de cambio y preferencias al cargar el componente
   useEffect(() => {
-    const getRatesData = async () => {
+    const fetchData = async () => {
       try {
-        const data = await fetchRates();
-        setRates(data);
+        const [ratesData, preferencesData] = await Promise.all([
+          fetchRates(),
+          getPreferences(),
+        ]);
+        setRates(ratesData);
+        setPreferences(preferencesData.preferred_currencies || []);
       } catch (err) {
-        setError("Error al cargar las tasas de cambio.");
+        setError("Error al cargar las tasas de cambio o preferencias.");
         console.error(err);
       } finally {
         setLoadingRates(false);
-      }
-    };
-
-    getRatesData();
-  }, []);
-
-  // Obtener las divisas que el usuario sigue
-  useEffect(() => {
-    const fetchPreferences = async () => {
-      try {
-        const data = await getPreferences();
-        setPreferences(data.preferred_currencies || []);
-      } catch (err) {
-        setError("Error al cargar las preferencias del usuario.");
-        console.error(err);
-      } finally {
         setLoadingPreferences(false);
       }
     };
 
-    fetchPreferences();
+    fetchData();
   }, []);
 
   return (
