@@ -1,25 +1,96 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5001';
 
-// Obtener el token una vez
-const getToken = () => localStorage.getItem('token');
+// Función de login
+export const loginUser = async (username, password) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Login failed');
+    }
+
+    const data = await response.json();
+
+    if (data.token) {
+      // Store token without any modifications
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('isAuthenticated', 'true');
+      return data;
+    } else {
+      throw new Error(data.message || 'No token received from server');
+    }
+  } catch (error) {
+    console.error('Error durante el login:', error);
+    throw error;
+  }
+};
+
+// Función de logout
+export const logoutUser = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${BACKEND_URL}/api/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Logout failed');
+    }
+
+    localStorage.removeItem('token');
+    localStorage.removeItem('isAuthenticated');
+    return await response.json();
+  } catch (error) {
+    console.error('Error durante el logout:', error);
+    throw error;
+  }
+};
 
 // Función para manejar las respuestas de error
 const handleError = async (response) => {
-  const error = await response.json();
-  const errorMessage = error.message || 'Error en la solicitud';
+  let errorMessage = 'Error en la solicitud';
+  try {
+    const error = await response.json();
+    errorMessage = error.message || errorMessage;
+  } catch (e) {
+    console.error('Error al procesar la respuesta de error:', e);
+  }
   throw new Error(errorMessage);
 };
 
-// Función para obtener preferencias
+// Función para obtener preferencias del usuario
 export const getPreferences = async () => {
-  const token = getToken();
+  const token = localStorage.getItem('token');
+  if (!token) {
+    console.error('Token no encontrado en localStorage');
+    throw new Error('No se encontró el token');
+  }
+
   try {
     const response = await fetch(`${BACKEND_URL}/user/preferences`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -33,80 +104,13 @@ export const getPreferences = async () => {
   }
 };
 
-// Función de login
-export const loginUser = async (username, password) => {
-  try {
-    const response = await fetch(`${BACKEND_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-      credentials: 'include', // Para manejar cookies de sesión
-    });
-
-    if (!response.ok) {
-      await handleError(response);
-    }
-
-    return await response.json(); // Retorna el token de respuesta
-  } catch (error) {
-    console.error('Error en el login:', error);
-    throw error;
-  }
-};
-
-// Función para obtener tasas de cambio en tiempo real
-export const fetchRates = async (currencyPairs = []) => {
-  const token = getToken();
-  const query = currencyPairs.length ? `?pairs=${currencyPairs.join(',')}` : '';
-  try {
-    const response = await fetch(`${BACKEND_URL}/api/rates${query}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      await handleError(response);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error al obtener tasas de cambio:', error);
-    throw error;
-  }
-};
-
-// Función para obtener análisis técnico
-export const fetchTechnicalAnalysis = async (currencyPair, timeframe = '1d') => {
-  const token = getToken();
-  try {
-    const response = await fetch(
-      `${BACKEND_URL}/api/analysis/${currencyPair}?timeframe=${timeframe}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    if (!response.ok) {
-      await handleError(response);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error al obtener análisis técnico:', error);
-    throw error;
-  }
-};
-
-// Función para actualizar preferencias
+// Función para actualizar preferencias del usuario
 export const updatePreferences = async (preferences) => {
-  const token = getToken();
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+
   try {
     const response = await fetch(`${BACKEND_URL}/user/preferences`, {
       method: 'PUT',
@@ -114,7 +118,8 @@ export const updatePreferences = async (preferences) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({ preferences }),
+      credentials: 'include',
+      body: JSON.stringify(preferences),
     });
 
     if (!response.ok) {
@@ -128,44 +133,78 @@ export const updatePreferences = async (preferences) => {
   }
 };
 
-// Función para obtener historial de precios
-export const fetchPriceHistory = async (currencyPair, from, to, interval = '1h') => {
-  const token = getToken();
+// Función para obtener las monedas disponibles
+export const fetchCurrencies = async () => {
   try {
-    const response = await fetch(
-      `${BACKEND_URL}/api/history/${currencyPair}?from=${from}&to=${to}&interval=${interval}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
+    const response = await fetch(`${BACKEND_URL}/api/currencies`);
     if (!response.ok) {
-      await handleError(response);
+      throw new Error('Error al obtener las monedas');
     }
-
-    return await response.json();
+    return await response.json();  // Retorna las monedas
   } catch (error) {
-    console.error('Error al obtener historial de precios:', error);
+    console.error('Error al obtener las monedas:', error);
     throw error;
   }
 };
 
-// Función para obtener predicciones
-export const fetchPredictions = async (currencyPair) => {
-  const token = getToken();
+// Función para obtener las tasas de cambio
+export const fetchRates = async (currencyPairs = []) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+
+  const query = currencyPairs.length ? `?pairs=${currencyPairs.join(',')}` : '';
+  
   try {
-    const response = await fetch(
-      `${BACKEND_URL}/api/predictions/${currencyPair}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const response = await fetch(`${BACKEND_URL}/api/rates${query}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error fetching exchange rates');
+    }
+
+    // Parse the response as JSON
+    const rates = await response.json();
+    console.log('Rates Response:', rates);
+
+    // Format the data for charts or display
+    const formattedData = Object.keys(rates).map((currency) => ({
+      timestamp: new Date().toISOString(),
+      value: rates[currency],
+      currency: currency,
+    }));
+
+    return formattedData;
+  } catch (error) {
+    console.error('Error al obtener tasas de cambio:', error);
+    throw error;
+  }
+};
+
+// Función para obtener análisis técnico
+export const fetchAnalysis = async (currencyPair) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/analysis/${currencyPair}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      credentials: 'include',
+    });
 
     if (!response.ok) {
       await handleError(response);
@@ -173,7 +212,35 @@ export const fetchPredictions = async (currencyPair) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Error al obtener predicciones:', error);
+    console.error(`Error al obtener análisis para ${currencyPair}:`, error);
+    throw error;
+  }
+};
+
+// Función para obtener historial de precios
+export const fetchHistory = async (currencyPair) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/history/${currencyPair}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      await handleError(response);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error al obtener historial para ${currencyPair}:`, error);
     throw error;
   }
 };

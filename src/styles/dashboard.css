@@ -2,37 +2,44 @@
 .dashboard-container {
   background-color: #f8f9fa; /* Fondo gris claro */
   min-height: 100vh; /* Altura mínima de la pantalla */
-  padding: 2rem; /* Espaciado interno */
+  padding: 3rem; /* Espaciado interno aumentado para mayor respiro */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Título principal del dashboard */
 .dashboard-title {
-  font-size: 2.5rem; /* Tamaño de fuente grande */
-  font-weight: bold; /* Texto en negrita */
+  font-size: 3rem; /* Tamaño de fuente más grande */
+  font-weight: 700; /* Texto en negrita más marcada */
   text-align: center; /* Centrar texto */
   color: #343a40; /* Gris oscuro */
-  margin-bottom: 2rem; /* Espaciado inferior */
+  margin-bottom: 3rem; /* Espaciado inferior */
 }
 
 /* Títulos de las secciones */
 .section-title {
-  font-size: 1.5rem; /* Tamaño de fuente mediano */
+  font-size: 2rem; /* Tamaño de fuente mediano-grande */
   font-weight: 600; /* Seminegrita */
   color: #495057; /* Gris intermedio */
-  margin-bottom: 1rem; /* Espaciado inferior */
+  margin-bottom: 1.5rem; /* Espaciado inferior */
+  text-align: left; /* Alineación a la izquierda */
+  width: 100%; /* Toma todo el ancho */
 }
 
 /* Texto de carga */
 .loading-text {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #6c757d; /* Gris Bootstrap */
+  text-align: center; /* Centrado del texto */
 }
 
 /* Texto cuando no hay datos */
 .no-data-text {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #6c757d; /* Gris Bootstrap */
   font-style: italic;
+  text-align: center; /* Centrado del texto */
 }
 
 /* Lista de preferencias */
@@ -40,15 +47,24 @@
   list-style: none; /* Sin viñetas */
   padding: 0;
   margin: 0;
+  max-width: 500px; /* Limitar el ancho máximo */
+  width: 100%;
 }
 
+/* Estilo para cada item de la lista de preferencias */
 .preferences-item {
   background-color: #ffffff; /* Fondo blanco */
-  padding: 1rem; /* Espaciado interno */
+  padding: 1.5rem; /* Espaciado interno más amplio */
   border: 1px solid #dee2e6; /* Borde gris claro */
-  border-radius: 0.25rem; /* Bordes redondeados */
-  margin-bottom: 0.5rem; /* Espaciado inferior */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  border-radius: 0.5rem; /* Bordes redondeados más suaves */
+  margin-bottom: 1rem; /* Espaciado inferior */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra más profunda */
+  transition: all 0.3s ease; /* Transición para animación de hover */
+}
+
+.preferences-item:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra al pasar el mouse */
+  transform: translateY(-5px); /* Eleva ligeramente el item al pasar el mouse */
 }
 
 /* Lista de tasas */
@@ -56,22 +72,31 @@
   list-style: none; /* Sin viñetas */
   padding: 0;
   margin: 0;
+  max-width: 500px; /* Limitar el ancho máximo */
+  width: 100%;
 }
 
+/* Estilo para cada item de la lista de tasas */
 .rates-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #ffffff; /* Fondo blanco */
-  padding: 1rem; /* Espaciado interno */
+  padding: 1.5rem; /* Espaciado interno */
   border: 1px solid #dee2e6; /* Borde gris claro */
-  border-radius: 0.25rem; /* Bordes redondeados */
-  margin-bottom: 0.5rem; /* Espaciado inferior */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  border-radius: 0.5rem; /* Bordes redondeados más suaves */
+  margin-bottom: 1rem; /* Espaciado inferior */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra más profunda */
+  transition: all 0.3s ease; /* Transición para animación de hover */
+}
+
+.rates-item:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra al pasar el mouse */
+  transform: translateY(-5px); /* Eleva ligeramente el item al pasar el mouse */
 }
 
 .rate-value {
-  font-size: 1.25rem; /* Tamaño de fuente */
+  font-size: 1.5rem; /* Tamaño de fuente más grande */
   font-weight: bold; /* Texto en negrita */
   color: #007bff; /* Azul Bootstrap */
 }
@@ -80,8 +105,19 @@
 .dashboard-alert {
   background-color: #f8d7da; /* Rojo claro */
   color: #721c24; /* Rojo oscuro */
-  padding: 1rem; /* Espaciado interno */
+  padding: 1.5rem; /* Espaciado interno */
   border: 1px solid #f5c6cb; /* Borde rojo claro */
   border-radius: 0.5rem; /* Bordes redondeados */
-  margin-top: 1rem; /* Espaciado superior */
+  margin-top: 2rem; /* Espaciado superior */
+  max-width: 600px; /* Limitar el ancho máximo */
+  width: 100%;
+  text-align: center; /* Centrado del texto */
+  font-size: 1.2rem; /* Ajustar tamaño de fuente */
+}
+
+/* Estilos para el contenedor del gráfico */
+.chart-container {
+  width: 80%; /* Ancho relativo al contenedor */
+  max-width: 1000px; /* Limitar el ancho máximo del gráfico */
+  margin-top: 3rem; /* Espaciado superior */
 }
