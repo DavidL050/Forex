@@ -1,25 +1,37 @@
 /* Estilo del navbar */
 .navbar {
-    background-color: #ffffff; /* Fondo blanco */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
-    padding: 1rem;
-  }
-  
-  .navbar-brand {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #007bff; /* Azul Bootstrap */
-  }
-  
-  .navbar-brand:hover {
-    color: #0056b3; /* Azul más oscuro */
-  }
-  
-  .nav-link {
-    color: #495057; /* Gris intermedio */
-    font-weight: 500;
-  }
-  
-  .nav-link:hover {
-    color: #007bff; /* Azul Bootstrap */
-  }
+  background-color: #1e1e2f; /* Fondo oscuro */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Marca o título de la app (opcional) */
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #00bcd4; /* Azul brillante estilo trading */
+  text-decoration: none;
+}
+
+.navbar-brand:hover {
+  color: #26a69a; /* Verde acento al pasar */
+}
+
+/* Botón de cerrar sesión */
+.nav-link {
+  color: #ffffff;
+  font-weight: 500;
+  background-color: #ef5350;
+  padding: 0.5rem 1rem;
+  border-radius: 0.4rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: #d32f2f;
+  color: #fff;
+}

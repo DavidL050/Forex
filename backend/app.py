@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import jwt
 from datetime import datetime, timedelta
 import requests
+import yfinance as yf
 
 app = Flask(__name__)
 
@@ -22,12 +23,13 @@ class User(db.Model):
     preferences = db.Column(db.JSON, default={"preferred_currencies": ["EUR/USD", "USD/JPY"]})
 
 # Configuración de CORS
+# Fix the CORS configuration
 CORS(app, 
-     origins=["http://localhost:5173"],
+     origins=["http://localhost:5173", "http://localhost:3000", "http://localhost:5001"], # Add your actual frontend origin
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+     expose_headers=["Content-Type", "Authorization"],
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
-
 # Función para generar token JWT
 def generate_token(user_id):
     token = jwt.encode(
@@ -48,10 +50,8 @@ def token_required(f):
             return jsonify({'message': 'Token is missing'}), 401
         
         try:
-            # Make sure to handle 'Bearer ' prefix properly
             if token.startswith('Bearer '):
-                token = token.split(' ')[1]  # Remove 'Bearer ' prefix
-            
+                token = token.split(' ')[1]
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
             current_user = User.query.get(data['user_id'])
             if not current_user:
@@ -73,7 +73,7 @@ def login():
     data = request.get_json()
     user = User.query.filter_by(username=data.get('username')).first()
     
-    if user and user.password == data.get('password'):  # En producción usa hash de contraseñas
+    if user and user.password == data.get('password'):
         token = generate_token(user.id)
         return jsonify({
             'status': 'success',
@@ -91,7 +91,7 @@ def login():
 def logout(current_user):
     return jsonify({'message': 'Logout successful'}), 200
 
-@app.route('/user/preferences', methods=['GET', 'PUT'])
+@app.route('/api/user/preferences', methods=['GET', 'PUT'])
 @token_required
 def preferences(current_user):
     if request.method == 'GET':
@@ -104,7 +104,6 @@ def preferences(current_user):
 
 @app.route('/api/currencies', methods=['GET'])
 def get_currencies():
-    # Return a list of available currency pairs
     currencies = [
         "EUR/USD", 
         "USD/JPY", 
@@ -122,16 +121,11 @@ def get_exchange_rates(current_user):
     api_url = 'https://openexchangerates.org/api/latest.json'
     app_id = 'e197206720a548a38bdc178d7ce33109'
 
-    # Get the requested pairs from query params if provided
     pairs = request.args.get('pairs', '')
-    
-    # Default symbols to fetch if none specified
     symbols = 'EUR,GBP,JPY,CHF,AUD,CAD,NZD'
-    
-    # If specific pairs were requested, parse them
+
     if pairs:
         pair_list = pairs.split(',')
-        # Extract the symbols from the pairs (e.g., EUR/USD -> EUR,USD)
         symbols = ','.join(set([currency for pair in pair_list for currency in pair.split('/')]))
 
     params = {
@@ -148,7 +142,6 @@ def get_exchange_rates(current_user):
         if 'error' in data:
             return jsonify({"error": f"API error: {data.get('description', 'Unknown error')}"}), 500
 
-        # Return the rates directly
         return jsonify(data.get('rates', {})), 200
 
     except Exception as e:
@@ -168,26 +161,52 @@ def get_technical_analysis(current_user, currency_pair):
     }
     return jsonify(analysis)
 
-@app.route('/api/history/<currency_pair>', methods=['GET'])
-@token_required
-def get_price_history(current_user, currency_pair):
-    # Aquí podrías integrar una API real de históricos
-    history = [
-        {"date": "2025-04-01", "price": 1.23},
-        {"date": "2025-04-02", "price": 1.24},
-        {"date": "2025-04-03", "price": 1.22}
-    ]
-    return jsonify(history)
+@app.route('/api/history/<base>/<quote>', methods=['GET'])
+def get_price_history(base, quote):
+    try:
+        app.logger.info(f"Requesting price history for {base}/{quote}")
+        
+        # Use the correct Yahoo Finance symbol format
+        symbol = f"{base}{quote}=X"
+        
+        app.logger.info(f"Using Yahoo Finance symbol: {symbol}")
+        
+        # Improved error handling
+        try:
+            data = yf.download(symbol, period="1mo", interval="1d")
+            app.logger.info(f"Downloaded data shape: {data.shape}")
+        except Exception as e:
+            app.logger.error(f"yfinance download error: {str(e)}")
+            return jsonify({"error": f"Error downloading data: {str(e)}"}), 500
+        
+        if data.empty:
+            app.logger.warning(f"No data found for {symbol}")
+            return jsonify({"error": f"No se encontraron datos para {base}/{quote}"}), 404
+        
+        # Process data as before...
+        history = []
+        for date, row in data.iterrows():
+            try:
+                entry = {
+                    "date": date.strftime('%Y-%m-%d'),
+                    "open": float(row['Open']),
+                    "high": float(row['High']),
+                    "low": float(row['Low']),
+                    "close": float(row['Close'])
+                }
+                history.append(entry)
+            except Exception as e:
+                app.logger.warning(f"Error processing row: {e}")
+                continue
+        
+        app.logger.info(f"Returning {len(history)} data points")
+        return jsonify(history)
 
-# Manejador de errores global
-@app.errorhandler(Exception)
-def handle_error(error):
-    return jsonify({
-        "error": str(error),
-        "message": "An unexpected error occurred."
-    }), 500
-
+    except Exception as e:
+        app.logger.error(f"Unexpected error in get_price_history: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+        
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Crear tablas si no existen
+        db.create_all()
     app.run(debug=True, port=5001, host='0.0.0.0')

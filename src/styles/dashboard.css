@@ -1,123 +1,58 @@
-/* Contenedor principal del dashboard */
-.dashboard-container {
-  background-color: #f8f9fa; /* Fondo gris claro */
-  min-height: 100vh; /* Altura mínima de la pantalla */
-  padding: 3rem; /* Espaciado interno aumentado para mayor respiro */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Título principal del dashboard */
-.dashboard-title {
-  font-size: 3rem; /* Tamaño de fuente más grande */
-  font-weight: 700; /* Texto en negrita más marcada */
-  text-align: center; /* Centrar texto */
-  color: #343a40; /* Gris oscuro */
-  margin-bottom: 3rem; /* Espaciado inferior */
-}
-
-/* Títulos de las secciones */
-.section-title {
-  font-size: 2rem; /* Tamaño de fuente mediano-grande */
-  font-weight: 600; /* Seminegrita */
-  color: #495057; /* Gris intermedio */
-  margin-bottom: 1.5rem; /* Espaciado inferior */
-  text-align: left; /* Alineación a la izquierda */
-  width: 100%; /* Toma todo el ancho */
-}
-
-/* Texto de carga */
-.loading-text {
-  font-size: 1.2rem;
-  color: #6c757d; /* Gris Bootstrap */
-  text-align: center; /* Centrado del texto */
-}
-
-/* Texto cuando no hay datos */
-.no-data-text {
-  font-size: 1.2rem;
-  color: #6c757d; /* Gris Bootstrap */
-  font-style: italic;
-  text-align: center; /* Centrado del texto */
-}
-
-/* Lista de preferencias */
-.preferences-list {
-  list-style: none; /* Sin viñetas */
-  padding: 0;
-  margin: 0;
-  max-width: 500px; /* Limitar el ancho máximo */
+/* CONTENEDOR DEL FORMULARIO DE SELECCIÓN DE DIVISAS */
+.currency-selection-card {
+  background-color: #1e2235;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  max-width: 1100px;
   width: 100%;
+  color: #f1f1f1;
+  border: 1px solid #2a2e42;
 }
 
-/* Estilo para cada item de la lista de preferencias */
-.preferences-item {
-  background-color: #ffffff; /* Fondo blanco */
-  padding: 1.5rem; /* Espaciado interno más amplio */
-  border: 1px solid #dee2e6; /* Borde gris claro */
-  border-radius: 0.5rem; /* Bordes redondeados más suaves */
-  margin-bottom: 1rem; /* Espaciado inferior */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra más profunda */
-  transition: all 0.3s ease; /* Transición para animación de hover */
-}
-
-.preferences-item:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra al pasar el mouse */
-  transform: translateY(-5px); /* Eleva ligeramente el item al pasar el mouse */
-}
-
-/* Lista de tasas */
-.rates-list {
-  list-style: none; /* Sin viñetas */
-  padding: 0;
-  margin: 0;
-  max-width: 500px; /* Limitar el ancho máximo */
+/* INPUT DE BÚSQUEDA */
+.currency-selection-card input[type="text"] {
+  background-color: #2a2e42;
+  border: 1px solid #3c4259;
+  color: #e9ecef;
+  padding: 0.6rem 1rem;
+  border-radius: 0.4rem;
   width: 100%;
+  margin-bottom: 1.5rem;
 }
 
-/* Estilo para cada item de la lista de tasas */
-.rates-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #ffffff; /* Fondo blanco */
-  padding: 1.5rem; /* Espaciado interno */
-  border: 1px solid #dee2e6; /* Borde gris claro */
-  border-radius: 0.5rem; /* Bordes redondeados más suaves */
-  margin-bottom: 1rem; /* Espaciado inferior */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra más profunda */
-  transition: all 0.3s ease; /* Transición para animación de hover */
+.currency-selection-card input[type="text"]::placeholder {
+  color: #adb5bd;
 }
 
-.rates-item:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra al pasar el mouse */
-  transform: translateY(-5px); /* Eleva ligeramente el item al pasar el mouse */
+/* CARDS DE DIVISAS */
+.currency-option {
+  background-color: #2c2f48;
+  border: 1px solid #3c4259;
+  color: #f1f1f1;
+  padding: 1rem;
+  border-radius: 0.6rem;
+  transition: all 0.3s ease;
 }
 
-.rate-value {
-  font-size: 1.5rem; /* Tamaño de fuente más grande */
-  font-weight: bold; /* Texto en negrita */
-  color: #007bff; /* Azul Bootstrap */
+.currency-option:hover {
+  background-color: #343957;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-/* Alertas del dashboard */
-.dashboard-alert {
-  background-color: #f8d7da; /* Rojo claro */
-  color: #721c24; /* Rojo oscuro */
-  padding: 1.5rem; /* Espaciado interno */
-  border: 1px solid #f5c6cb; /* Borde rojo claro */
-  border-radius: 0.5rem; /* Bordes redondeados */
-  margin-top: 2rem; /* Espaciado superior */
-  max-width: 600px; /* Limitar el ancho máximo */
-  width: 100%;
-  text-align: center; /* Centrado del texto */
-  font-size: 1.2rem; /* Ajustar tamaño de fuente */
+/* BOTÓN DE GUARDAR */
+.btn-save-preferences {
+  background-color: #00bcd4;
+  color: #121926;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 0.4rem;
+  border: none;
+  transition: background-color 0.3s ease;
 }
 
-/* Estilos para el contenedor del gráfico */
-.chart-container {
-  width: 80%; /* Ancho relativo al contenedor */
-  max-width: 1000px; /* Limitar el ancho máximo del gráfico */
-  margin-top: 3rem; /* Espaciado superior */
+.btn-save-preferences:hover {
+  background-color: #26c6da;
+  color: white;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { updatePreferences } from '../services/api';
 
 const CURRENCY_PAIRS = [
@@ -12,19 +12,35 @@ const CURRENCY_PAIRS = [
   { symbol: 'EUR/GBP', name: 'Euro / British Pound' },
 ];
 
-const FollowCurrencies = ({ userPreferences }) => {
-  const [selectedCurrencies, setSelectedCurrencies] = useState(userPreferences);
+const FollowCurrencies = ({ userPreferences, onPreferencesUpdated }) => {
+  const initialCurrencies = userPreferences?.preferred_currencies || userPreferences || [];
+  const [selectedCurrencies, setSelectedCurrencies] = useState(initialCurrencies);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const currenciesArray = userPreferences?.preferred_currencies || userPreferences || [];
+    setSelectedCurrencies(currenciesArray);
+  }, [userPreferences]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await updatePreferences(selectedCurrencies);
-      alert('Preferencias actualizadas exitosamente');
+      const response = await updatePreferences({
+        preferred_currencies: selectedCurrencies,
+      });
+
+      // 🔁 Notificar al padre para que actualice datos
+      if (onPreferencesUpdated) {
+        onPreferencesUpdated(selectedCurrencies);
+      }
+
+      alert('✅ Preferencias actualizadas exitosamente');
+      console.log('Preferencias actualizadas:', response);
     } catch (error) {
-      alert('Error al actualizar preferencias');
+      console.error('Error al actualizar preferencias:', error);
+      alert(`❌ Error: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -44,11 +60,11 @@ const FollowCurrencies = ({ userPreferences }) => {
   );
 
   return (
-    <div className="container mt-5">
-      <div className="card shadow">
+    <div className="container my-5">
+      <div className="card shadow border-0">
         <div className="card-body">
-          <h3 className="card-title text-center mb-4">Seguimiento de Pares de Divisas</h3>
-
+          <h3 className="text-center mb-4">Selecciona los Pares de Divisas que Deseas Seguir</h3>
+          
           <div className="mb-4">
             <input
               type="text"
@@ -61,32 +77,43 @@ const FollowCurrencies = ({ userPreferences }) => {
 
           <form onSubmit={handleSubmit}>
             <div className="row">
-              {filteredCurrencies.map((pair) => (
-                <div className="col-md-6 mb-3" key={pair.symbol}>
-                  <div
-                    className={`card ${selectedCurrencies.includes(pair.symbol) ? 'border-primary bg-light' : ''}`}
-                    onClick={() => handleChange(pair.symbol)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div className="card-body d-flex align-items-center">
-                      <input
-                        type="checkbox"
-                        className="form-check-input me-3"
-                        checked={selectedCurrencies.includes(pair.symbol)}
-                        onChange={() => {}}
-                      />
-                      <div>
-                        <p className="mb-1 fw-bold">{pair.symbol}</p>
-                        <p className="mb-0 text-muted">{pair.name}</p>
+              {filteredCurrencies.map((pair) => {
+                const isSelected = selectedCurrencies.includes(pair.symbol);
+                return (
+                  <div className="col-sm-6 col-md-4 mb-3" key={pair.symbol}>
+                    <div
+                      className={`card currency-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => handleChange(pair.symbol)}
+                      style={{
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        borderColor: isSelected ? '#0d6efd' : '#dee2e6',
+                        boxShadow: isSelected ? '0 0 10px rgba(13,110,253,0.2)' : 'none',
+                      }}
+                    >
+                      <div className="card-body d-flex align-items-center">
+                        <input
+                          type="checkbox"
+                          className="form-check-input me-3"
+                          checked={isSelected}
+                          onChange={() => {}}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <div>
+                          <p className="mb-1 fw-bold">{pair.symbol}</p>
+                          <p className="mb-0 text-muted">{pair.name}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="d-flex justify-content-between align-items-center mt-4">
-              <p className="text-muted">{selectedCurrencies.length} pares seleccionados</p>
+              <small className="text-muted">
+                {selectedCurrencies.length} pares seleccionados
+              </small>
               <button
                 type="submit"
                 disabled={isSubmitting}

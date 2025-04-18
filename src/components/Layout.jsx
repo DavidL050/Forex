@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 
 const Layout = () => {
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+    <div className="app-layout">
       <Navbar />
       <main className="container py-4">
         <Outlet />

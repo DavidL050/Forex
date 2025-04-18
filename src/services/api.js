@@ -9,6 +9,7 @@ export const loginUser = async (username, password) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ username, password }),
+      credentials: 'include', // Importante para manejar cookies de sesión
     });
 
     if (!response.ok) {
@@ -59,6 +60,9 @@ export const logoutUser = async () => {
     return await response.json();
   } catch (error) {
     console.error('Error durante el logout:', error);
+    // Independientemente del error, limpiamos el localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('isAuthenticated');
     throw error;
   }
 };
@@ -84,7 +88,7 @@ export const getPreferences = async () => {
   }
 
   try {
-    const response = await fetch(`${BACKEND_URL}/user/preferences`, {
+    const response = await fetch(`${BACKEND_URL}/api/user/preferences`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -94,10 +98,18 @@ export const getPreferences = async () => {
     });
 
     if (!response.ok) {
+      // Si recibimos un 401, podría ser un token expirado
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('isAuthenticated');
+        throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+      }
       await handleError(response);
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log('Preferencias obtenidas:', data);
+    return data;
   } catch (error) {
     console.error('Error al obtener preferencias:', error);
     throw error;
@@ -111,8 +123,10 @@ export const updatePreferences = async (preferences) => {
     throw new Error('No authentication token found');
   }
 
+  console.log('Enviando preferencias al servidor:', preferences);
+
   try {
-    const response = await fetch(`${BACKEND_URL}/user/preferences`, {
+    const response = await fetch(`${BACKEND_URL}/api/user/preferences`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -126,7 +140,15 @@ export const updatePreferences = async (preferences) => {
       await handleError(response);
     }
 
-    return await response.json();
+    const result = await response.json();
+    console.log('Respuesta de actualización de preferencias:', result);
+    
+    // Disparar un evento personalizado para informar a otros componentes
+    window.dispatchEvent(new CustomEvent('preferencesUpdated', { 
+      detail: preferences 
+    }));
+    
+    return result;
   } catch (error) {
     console.error('Error al actualizar preferencias:', error);
     throw error;
@@ -167,6 +189,11 @@ export const fetchRates = async (currencyPairs = []) => {
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('isAuthenticated');
+        throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+      }
       const errorData = await response.json();
       throw new Error(errorData.message || 'Error fetching exchange rates');
     }
@@ -207,6 +234,11 @@ export const fetchAnalysis = async (currencyPair) => {
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('isAuthenticated');
+        throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+      }
       await handleError(response);
     }
 
@@ -218,6 +250,7 @@ export const fetchAnalysis = async (currencyPair) => {
 };
 
 // Función para obtener historial de precios
+// Función para obtener historial de precios en formato OHLC desde Yahoo Finance
 export const fetchHistory = async (currencyPair) => {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -235,10 +268,26 @@ export const fetchHistory = async (currencyPair) => {
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('isAuthenticated');
+        throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+      }
       await handleError(response);
     }
 
-    return await response.json();
+    const data = await response.json();
+
+    // Validación y formato si es para velas
+    const formatted = data.map(entry => ({
+      x: entry.date, // e.g. "2025-04-01"
+      o: entry.open,
+      h: entry.high,
+      l: entry.low,
+      c: entry.close
+    }));
+
+    return formatted;
   } catch (error) {
     console.error(`Error al obtener historial para ${currencyPair}:`, error);
     throw error;

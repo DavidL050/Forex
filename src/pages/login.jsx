@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../services/api'; // Importando la función loginUser
+import { loginUser } from '../services/api';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -22,24 +22,17 @@ const Login = () => {
     setError('');
     
     try {
-      const response = await loginUser(username, password);
+      // La función loginUser ya se encarga de guardar el token en localStorage
+      await loginUser(username, password);
       
-      if (response && response.token) {
-        // Guardar token y estado de autenticación
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('isAuthenticated', 'true');
-        
-        // Verificar que el token se haya guardado correctamente
-        const storedToken = localStorage.getItem('token');
-        if (!storedToken) {
-          throw new Error('No se pudo guardar el token en el navegador');
-        }
-        
-        console.log('Login exitoso, redirigiendo al dashboard');
-        navigate('/dashboard');
-      } else {
-        setError('Respuesta inválida del servidor');
+      // Verificar que el token se haya guardado correctamente
+      const storedToken = localStorage.getItem('token');
+      if (!storedToken) {
+        throw new Error('No se pudo guardar el token en el navegador');
       }
+      
+      console.log('Login exitoso, redirigiendo al dashboard');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Error durante el login:', error);
       setError(error.message || 'Error al conectar con el servidor');
@@ -67,6 +60,7 @@ const Login = () => {
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              autoComplete="username"
             />
           </div>
           
@@ -82,6 +76,7 @@ const Login = () => {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
             />
           </div>
           
@@ -115,7 +110,7 @@ const Login = () => {
         
         <div className="mt-3 text-center">
           <small className="text-muted">
-            Para fines de demostración: Usuario: demo, Contraseña: demo123
+            Para fines de demostración: Usuario: admin, Contraseña: admin123
           </small>
         </div>
       </div>
