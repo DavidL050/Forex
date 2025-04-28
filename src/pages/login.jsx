@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../services/api';
+import { loginUser, verifyToken } from '../services/api';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -11,8 +11,6 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-    // Validaciones básicas
     if (!username.trim() || !password.trim()) {
       setError('Por favor ingresa usuario y contraseña');
       return;
@@ -22,16 +20,17 @@ const Login = () => {
     setError('');
     
     try {
-      // La función loginUser ya se encarga de guardar el token en localStorage
+      // Intentar iniciar sesión
       await loginUser(username, password);
       
-      // Verificar que el token se haya guardado correctamente
-      const storedToken = localStorage.getItem('token');
-      if (!storedToken) {
-        throw new Error('No se pudo guardar el token en el navegador');
-      }
+      // Verificar que el token es válido
+      await verifyToken();
       
-      console.log('Login exitoso, redirigiendo al dashboard');
+      // Limpiar los campos
+      setUsername('');
+      setPassword('');
+      
+      // Redirigir al dashboard después de login exitoso
       navigate('/dashboard');
     } catch (error) {
       console.error('Error durante el login:', error);
@@ -41,6 +40,7 @@ const Login = () => {
     }
   };
 
+  
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <div className="card shadow p-4" style={{ maxWidth: '400px', width: '100%' }}>
@@ -49,9 +49,7 @@ const Login = () => {
         
         <form onSubmit={handleLogin}>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">
-              Usuario
-            </label>
+            <label htmlFor="username" className="form-label">Usuario</label>
             <input
               id="username"
               name="username"
@@ -61,13 +59,12 @@ const Login = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoComplete="username"
+              autoFocus
             />
           </div>
           
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Contraseña
-            </label>
+            <label htmlFor="password" className="form-label">Contraseña</label>
             <input
               id="password"
               name="password"

@@ -4,8 +4,6 @@ import FollowCurrencies from "../components/FollowCurrencies";
 import IndicatorChart from "../components/IndicatorChart";
 import CandlestickChart from "../components/CandlestickChart";
 
-
-
 const Dashboard = () => {
   const [rates, setRates] = useState([]);
   const [preferences, setPreferences] = useState([]);
@@ -95,7 +93,6 @@ const Dashboard = () => {
           className="btn btn-primary d-flex align-items-center justify-content-center"
           onClick={handleRefresh}
           disabled={loadingRates || loadingPreferences}
-          style={{ minWidth: '180px', height: '45px' }}
         >
           {loadingRates || loadingPreferences ? (
             <>
@@ -158,7 +155,6 @@ const Dashboard = () => {
         {loadingHistory ? (
           <p className="loading-text">Cargando historial de {selectedCurrency}...</p>
         ) : historicalData.length > 0 ? (
-          // Usa el nuevo componente de gráfico de velas aquí
           <CandlestickChart data={historicalData} currencyPair={selectedCurrency} />
         ) : (
           <p className="no-data-text">No hay datos históricos para {selectedCurrency}.</p>
