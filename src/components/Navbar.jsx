@@ -14,12 +14,6 @@ const Navbar = () => {
   // Verifica si el usuario ha iniciado sesión
   const isAuthenticated = localStorage.getItem('token'); // O el método que estés utilizando para gestionar la autenticación
 
-  // Función para manejar el logout
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // Elimina el token de localStorage
-    navigate('/login'); // Redirige al login
-  };
-
   return (
     <div className="navbar">
       <div className="logo">
@@ -39,6 +33,12 @@ const Navbar = () => {
       
     </div>
   );
+};
+
+
+export const handleLogout = () => {
+  localStorage.removeItem('token'); // Elimina el token de localStorage
+  navigate('/login'); // Redirige al login
 };
 
 export default Navbar;

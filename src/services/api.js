@@ -17,13 +17,17 @@ const fetchData = async (url, options = {}) => {
     // Siempre incluir credentials para manejar cookies
     options.credentials = 'include';
     
-    const response = await fetch(url, options);
-
+    const response = await fetch(`${url}`, options);
+    
     if (!response.ok) {
-      if (response.status === 401) throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+      if (response.status === 401) {
+        // Si hay error de autenticación, eliminar el token
+        localStorage.removeItem('token');
+        throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+      }
       await handleError(response);
     }
-
+    
     return await response.json();
   } catch (error) {
     console.error('Error al procesar la solicitud:', error);
@@ -45,7 +49,13 @@ const handleError = async (response) => {
 
 // Función para verificar el token
 export const verifyToken = async () => {
-  return await fetchData(`${BACKEND_URL}/api/verify-token`);
+  try {
+    return await fetchData(`${BACKEND_URL}/api/verify-token`);
+  } catch (error) {
+    // Si hay un error al verificar el token, limpiamos el token
+    localStorage.removeItem('token');
+    throw error;
+  }
 };
 
 // Función para hacer login
@@ -55,12 +65,12 @@ export const loginUser = async (username, password) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password }),
   };
-
+  
   const data = await fetchData(`${BACKEND_URL}/api/login`, options);
-
-  // Asumimos que el backend devuelve el token al hacer login
-  if (data.token) {
-    localStorage.setItem('token', data.token); // Guardar token en localStorage
+  
+  // Guardamos el token en localStorage solo si la función que llama a loginUser no lo hace
+  if (data && data.token) {
+    localStorage.setItem('token', data.token);
   }
   
   return data;
@@ -68,12 +78,18 @@ export const loginUser = async (username, password) => {
 
 // Función para hacer logout
 export const logoutUser = async () => {
-  const options = {
-    method: 'POST',
-  };
-
-  await fetchData(`${BACKEND_URL}/api/logout`, options);
-  localStorage.removeItem('token');  // Limpiar el token después de logout
+  try {
+    const options = {
+      method: 'POST',
+    };
+    
+    await fetchData(`${BACKEND_URL}/api/logout`, options);
+  } catch (error) {
+    console.error("Error durante el logout:", error);
+    // Incluso si hay error, eliminamos el token
+  } finally {
+    localStorage.removeItem('token');
+  }
 };
 
 // Obtener preferencias
@@ -87,7 +103,6 @@ export const updatePreferences = async (preferences) => {
     method: 'PUT',
     body: JSON.stringify(preferences),
   };
-
   return await fetchData(`${BACKEND_URL}/api/user/preferences`, options);
 };
 
@@ -99,8 +114,11 @@ export const fetchCurrencies = async () => {
 // Obtener tasas de cambio
 export const fetchRates = async (currencyPairs = []) => {
   const query = currencyPairs.length ? `?pairs=${currencyPairs.join(',')}` : '';
-  
   const rates = await fetchData(`${BACKEND_URL}/api/rates${query}`);
+  
+  // Verificar que rates no sea nulo o indefinido antes de procesar
+  if (!rates) return [];
+  
   return Object.keys(rates).map(currency => ({
     timestamp: new Date().toISOString(),
     value: rates[currency],
@@ -110,16 +128,23 @@ export const fetchRates = async (currencyPairs = []) => {
 
 // Obtener análisis técnico
 export const fetchAnalysis = async (currencyPair) => {
-  return await fetchData(`${BACKEND_URL}/api/analysis/${currencyPair}`);
+  if (!currencyPair) {
+    throw new Error("Par de divisas requerido para obtener análisis");
+  }
+  return await fetchData(`${BACKEND_URL}/api/analysis/${encodeURIComponent(currencyPair)}`);
 };
 
 // Obtener historial de precios OHLC
 export const fetchHistory = async (currencyPair) => {
+  if (!currencyPair) {
+    throw new Error("Par de divisas requerido para obtener historial");
+  }
+  
   const data = await fetchData(`${BACKEND_URL}/api/history/${encodeURIComponent(currencyPair)}`);
-
+  
   // Verificamos que data sea un array y tenga estructura correcta
   if (!Array.isArray(data)) throw new Error('Datos de historial inválidos');
-
+  
   return data.map(entry => ({
     x: entry.date,
     o: parseFloat(entry.open),
@@ -127,4 +152,16 @@ export const fetchHistory = async (currencyPair) => {
     l: parseFloat(entry.low),
     c: parseFloat(entry.close),
   }));
+};
+
+export default {
+  loginUser,
+  logoutUser,
+  verifyToken,
+  getPreferences,
+  updatePreferences,
+  fetchCurrencies,
+  fetchRates,
+  fetchAnalysis,
+  fetchHistory
 };

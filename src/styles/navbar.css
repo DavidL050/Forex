@@ -1,66 +1,72 @@
 /* Barra de navegación */
 .navbar {
-    display: flex;
-    justify-content: space-between; /* Alinea el contenido de manera que los elementos se distribuyan entre los extremos */
-    align-items: center;
-    background-color: #1e40af; /* Azul oscuro */
-    color: white;
-    padding: 15px 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
-  }
-  
-  /* Logo */
-  .navbar .logo {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  /* Contenedor de los enlaces de navegación */
-  .navbar .nav-links {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 20px;
-    margin-left: auto; /* Esto mueve los botones al extremo derecho */
-  }
-  
-  /* Estilo de los enlaces de navegación */
-  .navbar .nav-links li {
-    display: inline;
-  }
-  
-  .navbar .nav-links a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 8px 16px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .navbar .nav-links a:hover {
-    background-color: #3b82f6; /* Azul más claro */
-  }
-  
-  /* Botón de cierre de sesión */
-  .navbar .btn-logout {
-    background-color: #dc2626; /* Rojo */
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .navbar .btn-logout:hover {
-    background-color: #ef4444; /* Rojo más claro */
-  }
-  
+  display: flex;
+  justify-content: space-between; /* Alinea el contenido de manera que los elementos se distribuyan entre los extremos */
+  align-items: center;
+  background-color: #003366; /* Azul oscuro */
+  color: white;
+  padding: 15px 40px; /* Aumento del padding para margen a los lados */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+/* Logo */
+.navbar .logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 20px;
+  margin-left: 30px; /* Margen a la derecha del logo */
+}
+
+/* Contenedor de los enlaces de navegación */
+.navbar .nav-links {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 20px;
+  margin-left: auto; /* Esto mueve los botones al extremo derecho */
+}
+
+/* Estilo de los enlaces de navegación */
+.navbar .nav-links li {
+  display: inline;
+}
+
+.navbar .nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  display: inline-block; /* Asegura que los enlaces sean de tipo bloque y tengan un tamaño consistente */
+}
+
+.navbar .nav-links a:hover {
+  background-color: #3b82f6; /* Azul más claro */
+}
+
+/* Botón de cierre de sesión */
+.navbar .btn-logout {
+  background-color: #ff4d4d; /* Rojo */
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  min-width: 120px; /* Asegura que el botón tenga un ancho mínimo */
+  text-align: center;
+  margin-left: 10px;
+  margin-right: 25px; /* Margen a la izquierda del botón */
+}
+
+.navbar .btn-logout:hover {
+  background-color: #e60000; /* Rojo más claro */
+}

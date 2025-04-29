@@ -44,8 +44,8 @@ const Login = () => {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <div className="card shadow p-4" style={{ maxWidth: '400px', width: '100%' }}>
-        <h2 className="text-center text-primary mb-4">Forex Dashboard</h2>
-        <p className="text-center text-muted mb-4">Inicia sesión para acceder a tu dashboard</p>
+        <h2 className="text-center text-primary mb-4">Forex</h2>
+        <p className="text-center text-muted mb-4">Inicia Sesión para Acceder a tu Dashboard</p>
         
         <form onSubmit={handleLogin}>
           <div className="mb-3">
@@ -104,12 +104,7 @@ const Login = () => {
             </button>
           </div>
         </form>
-        
-        <div className="mt-3 text-center">
-          <small className="text-muted">
-            Para fines de demostración: Usuario: admin, Contraseña: admin123
-          </small>
-        </div>
+
       </div>
     </div>
   );

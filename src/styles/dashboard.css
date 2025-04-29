@@ -15,216 +15,215 @@ body {
   padding: 20px;
   min-height: 100vh;
   background-color: #f5f7fa;
-}
-
-/* Barra de navegación */
-.navbar {
-  width: 100%;
-  background-color: #1e40af; /* Azul oscuro */
-  color: white;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-.navbar .logo h1 {
-  font-size: 24px;
-  margin: 0;
-}
-
-.navbar .nav-links {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  gap: 20px;
-}
-
-.navbar .nav-links a,
-.navbar .btn-logout {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-  padding: 8px 16px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.navbar .btn-logout {
-  background-color: #dc2626; /* Rojo para el botón de cerrar sesión */
-  border: none;
-}
-
-.navbar .btn-logout:hover {
-  background-color: #ef4444;
-}
-
-.navbar .nav-links a:hover,
-.navbar .btn-logout:hover {
-  background-color: #3b82f6;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* Contenido principal */
 .main-content {
-  margin-top: 100px; /* Para que no se superponga con la barra lateral */
+  margin-top: 30px;
   padding: 20px;
   width: 100%;
-  max-width: 1200px; /* Limita el ancho máximo */
+  max-width: 1200px;
 }
 
 .dashboard-title {
   font-size: 2rem;
-  color: #1e40af; /* Azul */
-  margin-bottom: 20px;
+  color: #25397a;
+  margin-bottom: 30px;
   text-align: center;
+  width: 100%;
+  font-weight: 700;
 }
 
 /* Sección de actualización de tasas */
 .refresh-section {
-  margin-bottom: 30px;
+  margin: 30px 0;
   text-align: center;
+  width: 100%;
 }
 
 .refresh-section .btn {
-  padding: 10px 20px;
-  background-color: #3b82f6;
+  padding: 12px 24px;
+  background-color: #2d5ead;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  min-width: 180px;
-  height: 45px;
+  transition: all 0.3s ease;
+  min-width: 200px;
+  height: 48px;
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
 }
 
 .refresh-section .btn:disabled {
   background-color: #a5b4fc;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .refresh-section .btn:hover:not(:disabled) {
   background-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(37, 99, 235, 0.4);
+}
+
+.refresh-section .btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.4);
 }
 
 /* Sección de preferencias */
 .section-title {
   font-size: 1.5rem;
   color: #1e40af;
-  margin-bottom: 10px;
-  text-align: left;
+  margin: 30px 0 15px 0;
+  text-align: center;
+  width: 100%;
+  font-weight: 600;
+  position: relative;
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 3px;
+  background-color: #3b82f6;
+  margin: 8px auto 0;
+  border-radius: 2px;
 }
 
 .preferences-list {
   list-style-type: none;
   padding: 0;
-  margin: 0;
-  font-size: 16px;
+  margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
 }
 
-.preferences-item {
-  padding: 8px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.preferences-item:last-child {
-  border-bottom: none;
+.currency-badge {
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-weight: 500;
+  font-size: 14px;
+  display: inline-block;
+  text-align: center;
+  border: 1px solid #bfdbfe;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
 }
 
 /* Formulario de selección de divisas */
 .form-group {
   width: 100%;
   max-width: 400px;
-  margin-bottom: 20px;
+  margin: 20px auto;
 }
 
 .form-group label {
   display: block;
   font-size: 16px;
-  color: #333;
+  color: #4b5563;
   margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .form-control {
   width: 100%;
-  padding: 10px;
+  padding: 12px 15px;
   font-size: 16px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 8px;
+  background-color: white;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.select-dropdown {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 100%;
+.form-control:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
-/* Mensajes de carga */
+/* Mensajes de carga y estados */
 .loading-text {
   color: #6b7280;
   font-size: 16px;
-  margin-bottom: 10px;
+  margin: 15px 0;
+  text-align: center;
 }
 
 .no-data-text {
   color: #9ca3af;
   font-size: 16px;
+  text-align: center;
+  margin: 20px 0;
+  font-style: italic;
 }
 
 /* Gráficos */
-.chart-container {
-  margin-top: 30px;
+.chart-container, .historical-chart-container {
+  margin: 20px auto;
   width: 100%;
   max-width: 1000px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.chart-container canvas {
+.chart-container canvas, .historical-chart-container canvas {
   width: 100%;
   height: 400px;
 }
 
-/* Alertas */
+.historical-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Alertas y mensajes */
 .dashboard-alert {
   width: 100%;
   max-width: 600px;
   padding: 15px;
-  margin-top: 20px;
-  border-radius: 5px;
+  margin: 15px auto;
+  border-radius: 8px;
   font-size: 16px;
   text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease;
 }
 
-/* Alertas de error */
 .dashboard-alert.error {
-  background-color: #f87171;
-  color: white;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-left: 4px solid #ef4444;
 }
 
-/* Responsividad */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .navbar .nav-links {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .main-content {
-    margin-top: 120px; /* Ajusta el margen superior */
-  }
-
-  .form-group {
-    width: 90%;
-  }
+.dashboard-alert.success {
+  background-color: #dcfce7;
+  color: #15803d;
+  border-left: 4px solid #22c55e;
 }
+
+/* Spinner para cargas */
+.spinner-border {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  vertical-align: -0.125em;
+  border: 0.2em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border 0.75s linear infinite;
+}
+
