@@ -262,7 +262,9 @@ const ForexLandingPage = () => {
           text-decoration: none;
           font-size: 16px;
         }
-        
+        .btn-login {
+          color: #fff;
+      }
         
         .logout-btn {
           background-color: #ff4d4d;
